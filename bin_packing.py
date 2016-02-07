@@ -38,14 +38,46 @@ def find_naive_solution (rectangles):
     return placement
 
 # -----------------------------------------------
+"""
+NOT WORKING CURRENTLY, TRYING TO FIGURE OUT OVERLAP ISSUE
+"""
+def lanes_attempt (rectangles):
+    placement = []
+    upper_left_x = 0
+    upper_left_y = 0
+    first_width = 0
+    first_height = 0
+    previous_width = 0
+    previous_height = 0
+    for rectangle in rectangles:
+        first_width = width = rectangle[0]
+        first_height = height = rectangle[1]
+        if(height >= previous_height): #if height is larger flip rectangle
+            rectangle = flip_rectangle(rectangle)
+            width = rectangle[0]
+            height = rectangle[1]
+            if(height >= previous_height): #if height is still larger, start a new row
+                upper_left_x = 0
+                upper_left_y = first_height
+                first_width = width
+                first_height = height
+        coordinate = (upper_left_x, upper_left_y)
+        placement.insert(0, coordinate)
+        previous_width = width
+        previous_height = height
+        upper_left_x = upper_left_x + width
 
-def attempt_1 (rectangles):
-    #do things
-    
+    placement.reverse()    
+    return placement
+
+def flip_rectangle(rectangle):
+    new_rectangle = (rectangle[1], rectangle[0])
+    return rectangle
+
 """
 FIND_SOLUTION:
     Define this function in bin_packing.py, along with any auxiliary
-functions that you need.  Do not change the driver.py file at all.
+unctions that you need.  Do not change the driver.py file at all.
 --------------------------------------------------
 rectangles: a list of tuples, e.g. [(w1, l1), ... (wn, ln)] where
     w1 = width of rectangle 1,
@@ -58,4 +90,4 @@ RETURNS: a list of tuples that designate the top left corner placement,
 """
 
 def find_solution(rectangles):
-    return attempt_1(rectangles)  # a working example!
+    return lanes_attempt(rectangles)  # a working example!
