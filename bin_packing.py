@@ -8,6 +8,8 @@
 # find_naive_solution from your submission.
 # ----------------------------------------------
 
+import operator
+
 """
 FIND_NAIVE_SOLUTION:
     Line the the top left corners of the rectangles up along
@@ -38,41 +40,36 @@ def find_naive_solution (rectangles):
     return placement
 
 # -----------------------------------------------
-"""
-NOT WORKING CURRENTLY, TRYING TO FIGURE OUT OVERLAP ISSUE
-"""
-def lanes_attempt (rectangles):
+
+def lanes_attempt(rectangles):
     placement = []
     upper_left_x = 0
     upper_left_y = 0
-    first_width = 0
-    first_height = 0
-    previous_width = 0
-    previous_height = 0
+    loop_count = 0;
+
+    rectangles.sort(key=operator.itemgetter(1))
+    rectangles.reverse()
+    #for rectangle in rectangles:
+    #    print (rectangle)
+
+    max_height = rectangles[0][1]
+    
     for rectangle in rectangles:
-        first_width = width = rectangle[0]
-        first_height = height = rectangle[1]
-        if(height >= previous_height): #if height is larger flip rectangle
-            rectangle = flip_rectangle(rectangle)
-            width = rectangle[0]
-            height = rectangle[1]
-            if(height >= previous_height): #if height is still larger, start a new row
-                upper_left_x = 0
-                upper_left_y = first_height
-                first_width = width
-                first_height = height
-        coordinate = (upper_left_x, upper_left_y)
-        placement.insert(0, coordinate)
-        previous_width = width
-        previous_height = height
+        if loop_count == 0:
+            max_height = rectangle[1]
+        width = rectangle[0]
+        coordinate = (upper_left_x, upper_left_y)  
+        placement.insert(0, coordinate)             
         upper_left_x = upper_left_x + width
+        loop_count = loop_count + 1
+        if loop_count == 100:
+            upper_left_y = upper_left_y + max_height
+            loop_count = 0
+            upper_left_x = 0
 
-    placement.reverse()    
+        
+    placement.reverse()                            
     return placement
-
-def flip_rectangle(rectangle):
-    new_rectangle = (rectangle[1], rectangle[0])
-    return rectangle
 
 """
 FIND_SOLUTION:
