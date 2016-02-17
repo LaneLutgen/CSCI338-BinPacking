@@ -73,11 +73,12 @@ def lanes_attempt(rectangles):
 
 
 """
-Sorted the rectangles accoring to height. The list is then
+Used Lane's attempt but
+sorted the rectangles accoring to height. The list is then
 reversed so the tallest rectangle is inserted first. The
 rectangles are added and the insertion lest is reversed and
 returned. The rows have no more than 75 rectangles each, and
-result in 92+% improvement over the naive solution. The
+result in 94+% improvement over the naive solution. The
 Average Ratio stays between .027 and .029 on 70 random sets.
 """
 def johns_attempt(rectangles):
@@ -86,11 +87,15 @@ def johns_attempt(rectangles):
     upper_left_y = 0
     loop_count = 0;
 
+	#sort the rectangles according to height.
     rectangles.sort(key=operator.itemgetter(0))
+	#reverse the list so the tallest rectanlgle is placed first
     rectangles.reverse()
     
-    max_width = rectangles[0][0]
+    #set the max width to the tallest rectangle's width
+	max_width = rectangles[0][0]
     
+	#loop through and place the rectangles
     for rectangle in rectangles:
         if loop_count == 0:
             max_width = rectangle[0]
@@ -104,6 +109,7 @@ def johns_attempt(rectangles):
             loop_count = 0
             upper_left_y = 0
         
+	#reverse the list before it gets returned
     placement.reverse()                            
     return placement
 
