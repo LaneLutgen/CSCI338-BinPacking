@@ -35,10 +35,10 @@ def find_naive_solution (rectangles):
     upper_left_y = 0
     
     for rectangle in rectangles:
-        width = rectangle[0]
+        height = rectangle[1]
         coordinate = (upper_left_x, upper_left_y)   # make a tuple
         placement.insert(0, coordinate)             # insert tuple at front of list
-        upper_left_x = upper_left_x + width
+        upper_left_y = upper_left_y - height
         
     placement.reverse()                             # original order
     return placement
@@ -102,31 +102,35 @@ def johns_attempt(rectangles):
     placement = []
     upper_left_x = 0
     upper_left_y = 0
-    loop_count = 0;
+    loop_count = 0
 
-	#sort the rectangles according to height.
+    #sort the rectangles according to height.
     rectangles.sort(key=operator.itemgetter(0))
-	#reverse the list so the tallest rectanlgle is placed first
+    #reverse the list so the tallest rectanlgle is placed first
     rectangles.reverse()
+
     
     #set the max width to the tallest rectangle's width
     max_width = rectangles[0][0]
+    #print("Max width",max_width)
     
-	#loop through and place the rectangles
+    #loop through and place the rectangles
     for rectangle in rectangles:
         if loop_count == 0:
             max_width = rectangle[0]
         height = rectangle[1]
         coordinate = (upper_left_x, upper_left_y)  
         placement.insert(0, coordinate)             
-        upper_left_y = upper_left_y + height
+        upper_left_y = upper_left_y - height - 990
         loop_count = loop_count + 1
-        if loop_count == 75:
-            upper_left_x = upper_left_x + max_width
+        if loop_count == 50:
+            upper_left_x = upper_left_x + max_width + 990
+           # print("x = ", upper_left_x)
             loop_count = 0
+            #print("y = ", upper_left_y)
             upper_left_y = 0
         
-	#reverse the list before it gets returned
+    #reverse the list before it gets returned
     placement.reverse()                            
     return placement
 
@@ -149,4 +153,5 @@ RETURNS: a list of tuples that designate the top left corner placement,
 def find_solution(rectangles):
     #return lanes_attempt(rectangles) 
     return johns_attempt(rectangles)
+    #return find_naive_solution(rectangles)
 
