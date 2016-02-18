@@ -8,6 +8,10 @@
 # find_naive_solution from your submission.
 # ----------------------------------------------
 
+#***************************
+#Lane Lutgen and John Waters
+#***************************
+
 import operator
 
 """
@@ -40,28 +44,41 @@ def find_naive_solution (rectangles):
     return placement
 
 # -----------------------------------------------
-
+"""
+Sorts rectangles according to width and then reverses the order
+so that the widest rectangle is used first. After 100 rectangles 
+have been placed, we take the height of the first rectangle in
+the row and make that our new upper_left_y point. This process
+then repeates until all rectangles have been placed
+"""
 def lanes_attempt(rectangles):
     placement = []
     upper_left_x = 0
     upper_left_y = 0
     loop_count = 0;
 
+    #Sorts rectangles
     rectangles.sort(key=operator.itemgetter(1))
+    #Reverses order so widest is first
     rectangles.reverse()
-    #for rectangle in rectangles:
-    #    print (rectangle)
 
+    #find the height of the first rectangle
     max_height = rectangles[0][1]
     
+
     for rectangle in rectangles:
         if loop_count == 0:
             max_height = rectangle[1]
         width = rectangle[0]
         coordinate = (upper_left_x, upper_left_y)  
-        placement.insert(0, coordinate)             
+        placement.insert(0, coordinate)
+        #set our new x coordinate             
         upper_left_x = upper_left_x + width
         loop_count = loop_count + 1
+
+        #if we have placed 100 rectangles, start a new row
+        #by setting the y coordinate to the height of the
+        #rectangle placed in the row first
         if loop_count == 100:
             upper_left_y = upper_left_y + max_height
             loop_count = 0
@@ -93,7 +110,7 @@ def johns_attempt(rectangles):
     rectangles.reverse()
     
     #set the max width to the tallest rectangle's width
-	max_width = rectangles[0][0]
+    max_width = rectangles[0][0]
     
 	#loop through and place the rectangles
     for rectangle in rectangles:
