@@ -10,6 +10,17 @@
 
 #***************************
 #Lane Lutgen and John Waters
+"""
+This solution relies on the original indexes of the inputted list.
+The list is cloned with a new value, 'num' added to keep track of
+the index that each rectangle has in the original list. The rectangles
+are then sorted accoring to width, largest first, and placed into
+the placement list with their original index still attached to them. 
+Once this is complete, the algorithm sorts the placement list according
+to the original indexes and returns a list of just the coordinate tuples
+back to the driver for testing. The final solution is the def:johns_attempt.
+This solution reliably showed 95.5+% increase over the naive solution.
+"""
 #***************************
 
 import operator
@@ -50,7 +61,7 @@ so that the widest rectangle is used first. After 100 rectangles
 have been placed, we take the height of the first rectangle in
 the row and make that our new upper_left_y point. This process
 then repeates until all rectangles have been placed
-"""
+
 def lanes_attempt(rectangles):
     placement = []
     upper_left_x = 0
@@ -87,54 +98,70 @@ def lanes_attempt(rectangles):
         
     placement.reverse()                            
     return placement
+"""
 
 
-"""
-Used Lane's attempt but
-sorted the rectangles accoring to height. The list is then
-reversed so the tallest rectangle is inserted first. The
-rectangles are added and the insertion lest is reversed and
-returned. The rows have no more than 75 rectangles each, and
-result in 94+% improvement over the naive solution. The
-Average Ratio stays between .027 and .029 on 70 random sets.
-"""
 def johns_attempt(rectangles):
+    # placement list with the index values still attached
     placement = []
+    # clone of the original rectangles list
+    clone = []
+    # return list with just the coordinates
+    returnList = []
+    
     upper_left_x = 0
     upper_left_y = 0
     loop_count = 0
-
-    #sort the rectangles according to height.
-    rectangles.sort(key=operator.itemgetter(0))
-    #reverse the list so the tallest rectanlgle is placed first
-    rectangles.reverse()
-
     
-    #set the max width to the tallest rectangle's width
-    max_width = rectangles[0][0]
-    #print("Max width",max_width)
-    
-    #loop through and place the rectangles
-    for rectangle in rectangles:
-        if loop_count == 0:
-            max_width = rectangle[0]
-        height = rectangle[1]
-        coordinate = (upper_left_x, upper_left_y)  
-        placement.insert(0, coordinate)             
-        upper_left_y = upper_left_y - height - 990
-        loop_count = loop_count + 1
-        if loop_count == 50:
-            upper_left_x = upper_left_x + max_width + 990
-           # print("x = ", upper_left_x)
-            loop_count = 0
-            #print("y = ", upper_left_y)
-            upper_left_y = 0
+    # add the index from the original list to the cloned list
+    for num in range(len(rectangles)):
+        clone.append((num, rectangles[num]))
         
-    #reverse the list before it gets returned
-    placement.reverse()                            
-    return placement
+    # sort the cloned list to order the rectangles from largest
+    # width to smallest width.        
+    clone.sort(key=operator.itemgetter(1), reverse = True)
 
+    # first row maximum width is in the first index, first element
+    # in the clone list. 
+    max_width = clone[0][1][0]
+   
+    for rectangle in clone:
+        if loop_count == 0:
+            # if a new collumn is created, set the width of that
+            # collumn to the next biggest rectangle's width
+            max_width = rectangle[1][0]
+        # the height of the current rectangle
+        height = rectangle[1][1]
+        coordinate = (upper_left_x, upper_left_y)
+        # insert the coordinates and original index into the
+        # placement list
+        placement.insert(0, (coordinate, rectangle[0]))
+        # adjust the height for the next rectangle insertion below
+        # the one before it
+        upper_left_y = upper_left_y - height
+        # increment the loop counter
+        loop_count = loop_count + 1
 
+        if loop_count == 50:
+            # to have the smallest perimeter possible, 50 rectangles
+            # proved to be the best option. when 50 rectangles
+            # are inserted, a new collumn is started
+            upper_left_x = upper_left_x + max_width
+            # reset the loop counter and the starting y value
+            loop_count = 0
+            upper_left_y = 0
+
+    # sort the list accoring to original index value     
+    placement.sort(key=operator.itemgetter(1))
+
+    # strip the index value and return only the coordinates to the
+    # driver
+    for num in range(len(placement)):
+        returnList.append(placement[num][0])
+
+    return returnList
+
+ 
 """
 FIND_SOLUTION:
     Define this function in bin_packing.py, along with any auxiliary
@@ -153,5 +180,4 @@ RETURNS: a list of tuples that designate the top left corner placement,
 def find_solution(rectangles):
     #return lanes_attempt(rectangles) 
     return johns_attempt(rectangles)
-    #return find_naive_solution(rectangles)
 
